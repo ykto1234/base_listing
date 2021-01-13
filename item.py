@@ -49,15 +49,15 @@ class ItemInfo:
 
     def setFromExcelRow(self, item_row):
         self.unit_number = str(item_row['管理番号'])
-        self.name = item_row['商品名']
+        self.name = str(item_row['商品名'])
         self.photo_path_list = ItemInfo.create_photo_path(self.unit_number)
-        self.detail = item_row['商品説明文']
+        self.detail = str(item_row['商品説明文'])
         self.price = str(round(item_row['商品価格']))
-        self.release_flg = ItemInfo.get_release_flg(item_row['商品公開フラグ'])
+        self.release_flg = ItemInfo.get_release_flg(str(item_row['商品公開フラグ']))
         self.display_top_flg = True
-        self.category_list = item_row['タグ'].split(',')
-        self.size = item_row['商品サイズ']
-        self.color = item_row['商品カラー']
+        self.category_list = str(item_row['タグ']).split(',')
+        self.size = str(item_row['商品サイズ'])
+        self.color = str(item_row['商品カラー'])
         if not (self.size == None and self.color == None):
             # どちらかが空じゃなければ在庫情報を作成
             self.stockinfo_list = ItemInfo.createStockInfo(self.size, self.color)
