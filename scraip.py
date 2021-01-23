@@ -60,8 +60,10 @@ def item_listing(driver, item, url):
     PRICE_sel = "#itemDetail_price"               # 商品価格のCSSセレクタ
     STOCK_sel = "#itemDetail_stock"               # 商品在庫のCSSセレクタ
     ADDSTOCK_sel = "body > div.root > main > div > div.c-container-noPadding.itemDetailContainer_uZ_MGZcw > div > section:nth-child(4) > div.row_2mAscmNh > dl > div.body_KNpXtKXd > dd > button"
-    TYPE_name = "variationText"                   # 種類のname
-    STOCK_name = "variationStock"                 # 在庫のname
+    #TYPE_name = "variationText"                   # 種類のname
+    TYPE_xpath = "/html/body/div[3]/main/div/div[3]/div/section[4]/div[2]/dl/div[2]/dd/table/tbody/tr[{idx1}]/td[1]/div/input"                   # 種類のxpath
+    #STOCK_name = "variationStock"                 # 在庫のname
+    STOCK_xpath = "/html/body/div[3]/main/div/div[3]/div/section[4]/div[2]/dl/div[2]/dd/table/tbody/tr[{idx1}]/td[2]/div/input"                 # 在庫のxpath
     CHECK1_sel = "#orderfirst"                    # 一番上表示チェックボックスのCSSセレクタ
     CHECK2_sel = "#display"                       # 公開チェックボックスのCSSセレクタ
     ITEMCODE_sel = ".formInput_1foJxi9g input"    # 商品コードのCSSセレクタ
@@ -132,14 +134,16 @@ def item_listing(driver, item, url):
 
         # ターゲット出現を待機
         WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located((By.NAME, TYPE_name + "0"))
+            EC.presence_of_element_located((By.XPATH, TYPE_xpath.format(idx1=1)))
         )
         # １行目入力
-        driver.find_elements_by_name(TYPE_name + "0")[0].send_keys(item.stockinfo_list[0].type)
-        driver.find_elements_by_name(STOCK_name + "0")[0].send_keys(item.stockinfo_list[0].stock)
+        #driver.find_elements_by_name(TYPE_name + "0")[0].send_keys(item.stockinfo_list[0].type)
+        #driver.find_elements_by_name(STOCK_name + "0")[0].send_keys(item.stockinfo_list[0].stock)
+        driver.find_elements_by_xpath(TYPE_xpath.format(idx1=1))[0].send_keys(item.stockinfo_list[0].type)
+        driver.find_elements_by_xpath(STOCK_xpath.format(idx1=1))[0].send_keys(item.stockinfo_list[0].stock)
         # ２行目入力
-        driver.find_elements_by_name(TYPE_name + "1")[0].send_keys(item.stockinfo_list[1].type)
-        driver.find_elements_by_name(STOCK_name + "1")[0].send_keys(item.stockinfo_list[1].stock)
+        driver.find_elements_by_xpath(TYPE_xpath.format(idx1=2))[0].send_keys(item.stockinfo_list[1].type)
+        driver.find_elements_by_xpath(STOCK_xpath.format(idx1=2))[0].send_keys(item.stockinfo_list[1].stock)
 
     if len(item.stockinfo_list) > 2:
         # 商品が３つ以上なら
@@ -152,11 +156,13 @@ def item_listing(driver, item, url):
 
             # ターゲット出現を待機
             WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.NAME, TYPE_name + str(j)))
+                EC.presence_of_element_located((By.XPATH, TYPE_xpath.format(idx1=j)))
             )
             # 種類と在庫を入れる
-            driver.find_elements_by_name(TYPE_name + str(j))[0].send_keys(item.stockinfo_list[j].type)
-            driver.find_elements_by_name(STOCK_name + str(j))[0].send_keys(item.stockinfo_list[j].stock)
+            #driver.find_elements_by_name(TYPE_name + str(j))[0].send_keys(item.stockinfo_list[j].type)
+            driver.find_elements_by_xpath(TYPE_xpath.format(idx1=j+1))[0].send_keys(item.stockinfo_list[j].type)
+            #driver.find_elements_by_name(STOCK_name + str(j))[0].send_keys(item.stockinfo_list[j].stock)
+            driver.find_elements_by_xpath(STOCK_xpath.format(idx1=j+1))[0].send_keys(item.stockinfo_list[j].stock)
 
     # 一番上に表示チェックボックスをONにする
     # ※pythonのsendkeyでは、「element not interactable」エラーが出るため、JavaScriptを使用してチェックボックスをクリックする
